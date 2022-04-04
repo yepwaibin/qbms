@@ -1,0 +1,9 @@
+@import "~normalize.css";
+@import "~antd/dist/antd.css";
+
+.breadcrumb {
+  margin: 20px;
+  background-color: #fff;
+  height: 40px;
+  padding: 10px;
+}
