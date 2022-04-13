@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const LoginWrapper = styled.div`
+export const RegisterWrapper = styled.div`
   background: no-repeat url(${require("@/assets/img/login-bg.jpg")});
   background-size: cover;
   width: 100vw;
@@ -11,24 +11,15 @@ export const LoginWrapper = styled.div`
 `;
 
 export const PanelWrappear = styled.div`
-  width: 350px;
-  height: 300px;
+  width: 400px;
+  height: 500px;
   background: hsla(0,0%,100%,.3);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  Form {
-    display: flex;
-    flex-direction: column;
-    margin-top: 30px;
-    Button {
-      width: 100%;
-      height: 2.5rem
-    }
-    .remenber {
-      display: flex;
-      justify-content: space-between;
-    }
+  .btn {
+    margin: 10px;
+    margin-left: 0px;
   }
 `

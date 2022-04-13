@@ -1,16 +1,41 @@
 import React, { memo } from "react";
-import { NavLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { LoginWrapper, PanelWrappear } from "./style";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { loginUser } from "../../services/users";
 
 const Login = memo(() => {
+  const history = useHistory()
+  const handleLogin = (value) => {
+    const { Uname, Upassword } = value;
+    const data = {
+      Uname,
+      Upassword,
+    };
+    const success = () => {
+      message.success("登录成功");
+    };
+    const error = () => {
+      message.error('登录失败');
+    };
+    loginUser(data).then((res) => {
+      if (res.token) {
+        success();
+        sessionStorage.setItem("token", res.token);
+        history.push('/home')
+      } else {
+        error()
+      }
+    });
+  };
   return (
     <LoginWrapper>
       <PanelWrappear>
-        <Form className="form">
+        <h2>题库管理系统登录界面</h2>
+        <Form className="form" onFinish={handleLogin}>
           <Form.Item
-            name="username"
+            name="Uname"
             rules={[
               {
                 required: true,
@@ -25,7 +50,7 @@ const Login = memo(() => {
             />
           </Form.Item>
           <Form.Item
-            name="password"
+            name="Upassword"
             rules={[
               {
                 required: true,
@@ -56,7 +81,8 @@ const Login = memo(() => {
               htmlType="submit"
               className="login-form-button"
             >
-              <NavLink to="/home/user/search">登录</NavLink>
+            登录
+              {/* <NavLink to="/home">登录</NavLink> */}
             </Button>
           </Form.Item>
         </Form>

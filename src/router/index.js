@@ -1,6 +1,8 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
+import Register from "../pages/register";
+import Login from "../pages/login";
 import Home from "../pages/home";
 
 import UserCreate from "../pages/users/create";
@@ -20,13 +22,16 @@ import PaperQuery from "../pages/paper/paper-query";
 import AutoMerge from "../pages/paper/merge/auto-merge";
 import MaualMerge from "../pages/paper/merge/manual-merge";
 
-import Login from "../pages/login";
-
 const routes = [
   {
     path: "/",
     exact: true,
     render: () => <Redirect to="/login" />,
+  },
+  {
+    path: "/register",
+    exact: true,
+    component: Register,
   },
   {
     path: "/login",
