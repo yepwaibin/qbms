@@ -11,9 +11,9 @@ export default function request(option) {
     // 配置请求和响应拦截
     instance.interceptors.request.use(
       (config) => {
-        if (sessionStorage.getItem('token')) {
-          config.headers.Authorization = sessionStorage.getItem('token')
-        }
+        // if (sessionStorage.getItem('token')) {
+        //   config.headers.Authorization = sessionStorage.getItem('token')
+        // }
         return config;
       },
       (err) => {

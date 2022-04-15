@@ -23,10 +23,34 @@ export function getUserList() {
   })
 }
 
-export function modifyUser(user) {
+// export function modifyUser(user) {
+//   return request({
+//     method: 'post',
+//     url: '/users/modify',
+//     data: user
+//   })
+// }
+
+export function updateUser(user) {
   return request({
     method: 'post',
-    url: '/users/modify',
+    url: '/users/update',
     data: user
+  })
+}
+
+export function removeUser(Uid) {
+  return request({
+    method: 'delete',
+    url: '/users/remove',
+    data: Uid
+  })
+}
+
+export function searchUser(user) {
+  return request({
+    method: 'get',
+    url: '/users/search',
+    params: user
   })
 }
