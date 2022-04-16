@@ -27,7 +27,12 @@ import {
 
 import { UserQueryWrapper } from "./style";
 
-import { getUserList, updateUser, removeUser, searchUser } from "../../../services/users";
+import {
+  getUserList,
+  updateUser,
+  removeUser,
+  searchUser,
+} from "../../../services/users";
 
 const UserQuery = () => {
   const [isModifyVisible, setIsModifyVisible] = useState(false);
@@ -119,7 +124,6 @@ const UserQuery = () => {
     temp[0].Uid = key;
     setUid(Number(key));
     setUser(temp[0]);
-    console.log(user, uid);
     setIsModifyVisible(true);
   };
 
@@ -131,7 +135,7 @@ const UserQuery = () => {
     value.Uid = uid;
     console.log(value);
     updateUser(value).then((res) => {
-      success2()
+      success2();
     });
     setUser({});
   };
@@ -150,10 +154,7 @@ const UserQuery = () => {
         const date = {
           Uid: key,
         };
-        console.log(date);
-        removeUser(date).then((res) => {
-          console.log(res);
-        });
+        removeUser(date).then();
         success();
       },
       onCancel() {
@@ -163,12 +164,13 @@ const UserQuery = () => {
   };
 
   const handleSearch = (value) => {
-    searchUser(value).then(res => {
-      SetSelectUser([...res]);
-    }).then(() => {
-      console.log(selectUser)
-    })
-    // form.resetFields();
+    searchUser(value)
+      .then((res) => {
+        SetSelectUser([...res]);
+      })
+      .then(() => {
+        console.log(selectUser);
+      });
   };
 
   return (
@@ -210,7 +212,10 @@ const UserQuery = () => {
       </div>
 
       <div className="content">
-        <Table dataSource={selectUser.length === 0 ? usersData : selectUser} columns={usersColumns}></Table>
+        <Table
+          dataSource={selectUser.length === 0 ? usersData : selectUser}
+          columns={usersColumns}
+        ></Table>
       </div>
 
       <Modal

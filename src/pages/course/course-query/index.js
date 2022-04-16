@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   Form,
@@ -8,73 +8,51 @@ import {
   Space,
   Tag,
   Modal,
-  Switch,
   Breadcrumb,
+  message,
 } from "antd";
-import { courseData } from "@/common/course-data.js";
-
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { getCourseList, removeCourse, searchCourse } from "@/services/course";
 import { CourseQueryWrapper } from "./style";
+import { CgradeRule, CcourseRule, CchapterRule, CknowledgeRule } from "./rules";
 
 const CourseQuery = () => {
   const usersColumns = [
     {
       title: "年级",
-      dataIndex: "grade",
-      key: "grade",
+      dataIndex: "Cgrade",
+      key: "Cgrade",
     },
     {
       title: "科目",
-      dataIndex: "course",
-      key: "course",
+      dataIndex: "Ccourse",
+      key: "Ccourse",
     },
     {
       title: "章节",
-      dataIndex: "chapter",
-      key: "chapter",
+      dataIndex: "Cchapter",
+      key: "Cchapter",
     },
     {
       title: "知识点",
-      key: "point",
-      render: ({ points }) => {
-        return (
-          <>
-            {points.map((item) => {
-              return (
-                <Tag color="blue" key={item}>
-                  {item}
-                </Tag>
-              );
-            })}
-          </>
-        );
+      key: "Cknowledge",
+      render: (text, record) => {
+        return <Tag color="green">{record.Cknowledge}</Tag>;
       },
     },
     {
       title: "操作",
       key: "action",
-      render: () => (
-        <Space size="middle">
-          <button onClick={showModalModify}>修改</button>
-          <button onClick={showModalModify}>删除</button>
-        </Space>
-      ),
+      render: (text, record) => {
+        return (
+          <Space size="middle">
+            <button onClick={() => showModalModify(record.Cid)}>修改</button>
+            <button onClick={() => handleDelete(record.Cid)}>删除</button>
+          </Space>
+        );
+      },
     },
   ];
-
-  const [isModifyVisible, setIsModifyVisible] = useState(false);
-
-  const showModalModify = () => {
-    setIsModifyVisible(true);
-  };
-
-  const handleModifyOk = () => {
-    setIsModifyVisible(false);
-  };
-
-  const handleModifyCancel = () => {
-    setIsModifyVisible(false);
-  };
-
   const formItemLayout = {
     labelCol: {
       span: 4,
@@ -83,8 +61,59 @@ const CourseQuery = () => {
       span: 14,
     },
   };
-
+  const success = () => {
+    message.success("删除成功");
+  };
+  const [courseData, setCourseData] = useState([]);
+  const [course, setCourse] = useState([]);
+  const [id, setId] = useState();
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
+  const { confirm } = Modal;
+  useEffect(() => {
+    getCourseList().then((res) => {
+      setCourseData([...res]);
+    });
+  }, []);
+  const [isModifyVisible, setIsModifyVisible] = useState(false);
+
+  const showModalModify = (key) => {
+    setId(key);
+    setIsModifyVisible(true);
+  };
+
+  const handleModifyOk = () => {
+    form2.submit();
+    setIsModifyVisible(false);
+  };
+  const submitModify = (value) => {
+    console.log(value);
+  };
+
+  const handleModifyCancel = () => {
+    setIsModifyVisible(false);
+  };
+
+  const handleDelete = (key) => {
+    confirm({
+      title: "你想删除这个科目信息吗",
+      icon: <ExclamationCircleOutlined />,
+      okText: "确认",
+      cancelText: "取消",
+      onOk() {
+        removeCourse(key).then();
+        success();
+      },
+      onCancel() {},
+    });
+  };
+
+  const handleSearch = (value) => {
+    console.log(value);
+    searchCourse(value).then(res => {
+      setCourse([...res])
+    })
+  }
   return (
     <CourseQueryWrapper>
       <div className="breadcrumb">
@@ -98,51 +127,55 @@ const CourseQuery = () => {
         </Breadcrumb>
       </div>
       <div className="header">
-        <Form layout="inline" form={form}>
-          <Form.Item label="年级">
-            <Input placeholder="查询的年级" />
+        <Form layout="inline" form={form} onFinish={handleSearch}>
+          <Form.Item label="年级" name="Cgrade">
+            <Input placeholder="年级" />
           </Form.Item>
-          <Form.Item label="科目">
-            <Input placeholder="查询的科目" />
+          <Form.Item label="科目" name="Ccourse">
+            <Input placeholder="科目" />
           </Form.Item>
-          <Form.Item label="章节">
-            <Input placeholder="查询的章节" />
+          <Form.Item label="章节" name="Cchapter">
+            <Input placeholder="章节" />
           </Form.Item>
-          <Form.Item label="知识点">
-            <Input placeholder="查询的知识点" />
+          <Form.Item label="知识点" name="Cknowledge">
+            <Input placeholder="知识点" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary">查询</Button>
+            <Button type="primary" htmlType="submit">
+              查询
+            </Button>
           </Form.Item>
         </Form>
       </div>
       <div className="content">
-        <Table dataSource={courseData} columns={usersColumns}></Table>
+        <Table dataSource={course.length === 0 ? courseData : course} columns={usersColumns}></Table>
       </div>
+
       <Modal
-        title="编辑用户"
+        title="修改科目"
         visible={isModifyVisible}
+        okText="修改课程"
+        cancelText="取消修改"
         onOk={handleModifyOk}
         onCancel={handleModifyCancel}
       >
-        <Form layout="horizontal" form={form} {...formItemLayout}>
-          <Form.Item label="姓名">
-            <Input placeholder="查询的名字" />
+        <Form
+          layout="horizontal"
+          form={form2}
+          {...formItemLayout}
+          onFinish={submitModify}
+        >
+          <Form.Item label="年级" name="Cgrade" rules={CgradeRule}>
+            <Input placeholder="年级" />
           </Form.Item>
-          <Form.Item label="用户名">
-            <Input placeholder="查询的用户名" />
+          <Form.Item label="科目" name="Ccourse" rules={CcourseRule}>
+            <Input placeholder="科目" />
           </Form.Item>
-          <Form.Item label="邮箱">
-            <Input placeholder="查询的邮箱" />
+          <Form.Item label="章节" name="Cchapter" rules={CchapterRule}>
+            <Input placeholder="章节" />
           </Form.Item>
-          <Form.Item label="职位">
-            <Input placeholder="查询的职位" />
-          </Form.Item>
-          <Form.Item label="学校">
-            <Input placeholder="要查询的学校" />
-          </Form.Item>
-          <Form.Item name="switch" label="状态" valuePropName="checked">
-            <Switch />
+          <Form.Item label="知识点" name="Cknowledge" rules={CknowledgeRule}>
+            <Input placeholder="知识点" />
           </Form.Item>
         </Form>
       </Modal>

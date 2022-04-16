@@ -1,12 +1,200 @@
-import React, { memo } from 'react'
-import {ExamSearchWrapper} from './style'
-import FilterTittle from '@/components/filter-tittle'
-const ExamSearch = memo(() => {
-  return (
-    <ExamSearchWrapper>
-      <FilterTittle />
-    </ExamSearchWrapper>
-  )
-})
+import React, { memo, useState, useEffect } from "react";
+import {
+  Form,
+  Button,
+  Select,
+  Divider,
+  Card,
+  Table,
+  Tag,
+  Space,
+  Modal,
+} from "antd";
+import { FilterTittleWrapper } from "./style";
+import { type } from "@/common/local-data";
 
-export default ExamSearch
+import { getGrade, getCourse, getChapter, getList } from "@/services/paper";
+
+const ExamSearch = memo(() => {
+  const { Option } = Select;
+  const columns = [
+    {
+      title: "年级",
+      dataIndex: "Tgrade",
+      key: "Tgrade",
+    },
+    {
+      title: "科目",
+      dataIndex: "Tcourse",
+      key: "Tcourse",
+    },
+    {
+      title: "题型",
+      dataIndex: "Ttype",
+      key: "Ttype",
+    },
+    {
+      title: "分值",
+      dataIndex: "Tpoint",
+      key: "Tpoint",
+    },
+    {
+      title: "难度",
+      dataIndex: "Tdifficulty",
+      key: "Tdifficulty",
+    },
+    {
+      title: "涉及知识点",
+      key: "tags",
+      dataIndex: "tags",
+      render: (tags) => (
+        <>
+          {tags.map((tag) => {
+            let color = tag.length > 5 ? "geekblue" : "green";
+            if (tag === "loser") {
+              color = "volcano";
+            }
+            return (
+              <Tag color={color} key={tag}>
+                {tag.toUpperCase()}
+              </Tag>
+            );
+          })}
+        </>
+      ),
+    },
+    {
+      title: "操作",
+      key: "action",
+      render: (text, record) => {
+        return (
+          <Space size="middle">
+            <button onClick={() => showQuestion(record.number)}>查看</button>
+            <button onClick={() => showModalModify(record.number)}>修改</button>
+            <button onClick={() => handleDelete(record.number)}>删除</button>
+          </Space>
+        );
+      },
+    },
+  ];
+
+  const [grade, setGrade] = useState([]);
+  const [course, setCourse] = useState([]);
+  const [chapter, setChapter] = useState([]);
+  const [testList, setTestList] = useState([]);
+  const [question, setQuestion] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    getGrade().then((res) => {
+      setGrade([...res]);
+    });
+    getCourse().then((res) => {
+      setCourse([...res]);
+    });
+    getChapter().then((res) => {
+      setChapter([...res]);
+    });
+    getList().then((res) => {
+      res.map((item, index) => {
+        item.tags = item.Tknowledge.split(",");
+      });
+      setTestList([...res]);
+    });
+  }, []);
+
+  const showQuestion = (key) => {
+    const temp = testList.filter((item, index) => item.number === key)
+    setQuestion(...temp)
+    console.log(question)
+    setIsModalVisible(true);
+  };
+  const showModalModify = (key) => {};
+  const handleDelete = (key) => {
+    console.log(key);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  return (
+    <FilterTittleWrapper>
+      <Form className="filter">
+        <Form.Item name="Tgrade" label="年级" hasFeedback>
+          <Select placeholder="请选择年级">
+            {grade.map((item, index) => {
+              return (
+                <Option key={item.Cgrade} value={item.Cgrade}>
+                  {item.Cgrade}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="Tcourse" label="科目" hasFeedback>
+          <Select placeholder="请选择科目">
+            {course.map((item, index) => (
+              <Option key={item.Ccourse} value={item.Ccourse}>
+                {item.Ccourse}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="Tchapter" label="章节" hasFeedback>
+          <Select placeholder="请选择章节">
+            {chapter.map((item) => {
+              return (
+                <Option key={item.Cchapter} value={item.Cchapter}>
+                  {item.Cchapter}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="type" label="题型" hasFeedback>
+          <Select placeholder="请选择题型">
+            {type.map((item, index) => {
+              return (
+                <Option key={item.title} value={item.title}>
+                  {item.title}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            查询
+          </Button>
+        </Form.Item>
+      </Form>
+
+      <Divider orientation="left">试题信息</Divider>
+
+      <Card className="card">
+        <Table columns={columns} dataSource={testList} />
+      </Card>
+
+      <Modal
+        title="Basic Modal"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div>
+          {question.Tdesc}
+        </div>
+      </Modal>
+    </FilterTittleWrapper>
+  );
+});
+
+export default ExamSearch;

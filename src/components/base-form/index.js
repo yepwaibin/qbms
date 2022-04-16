@@ -78,37 +78,12 @@ const BaseForm = memo((props) => {
           <Input />
         </Form.Item>
 
-        {/* <Form.List name="radioOptions" className="form-list">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map((field, index) => (
-                <Form.Item
-                  label={`选项${index + 1}`}
-                  key={field.key}
-                  className="radioOptions"
-                >
-                  <Radio className="radio">
-                    <Input className="radioOptionsItem" />
-                  </Radio>
-                  <Button
-                    onClick={() => remove(field.name)}
-                    className="deleteButton"
-                  >
-                    删除
-                  </Button>
-                </Form.Item>
-              ))}
-              <Form.Item wrapperCol={buttonWrapperCol}>
-                <Button onClick={() => add()} icon={<PlusOutlined />}>
-                  增加选项
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List> */}
-
         {option}
 
+        <Form.Item label="答案" name="answer">
+          <Input />
+        </Form.Item>
+        
         <Form.Item wrapperCol={buttonWrapperCol}>
           <Button type="primary" htmlType="submit">
             提交
