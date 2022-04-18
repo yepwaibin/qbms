@@ -33,7 +33,7 @@ const UserCreate = memo(() => {
     message.success("创建成功");
   };
   const error = () => {
-    message.error('创建失败');
+    message.error("创建失败");
   };
   const handlesubmit = (value) => {
     if (value.Ustatus) {
@@ -46,7 +46,7 @@ const UserCreate = memo(() => {
         success();
         onRest();
       } else {
-        error()
+        error();
       }
     });
   };

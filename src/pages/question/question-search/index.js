@@ -13,7 +13,13 @@ import {
 import { FilterTittleWrapper } from "./style";
 import { type } from "@/common/local-data";
 
-import { getGrade, getCourse, getChapter, getList } from "@/services/paper";
+import {
+  getGrade,
+  getCourse,
+  getChapter,
+  getList,
+  remove,
+} from "@/services/paper";
 
 const ExamSearch = memo(() => {
   const { Option } = Select;
@@ -84,6 +90,7 @@ const ExamSearch = memo(() => {
   const [testList, setTestList] = useState([]);
   const [question, setQuestion] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [removeId, setRemoveId] = useState(0);
 
   useEffect(() => {
     getGrade().then((res) => {
@@ -101,17 +108,19 @@ const ExamSearch = memo(() => {
       });
       setTestList([...res]);
     });
-  }, []);
+  }, [removeId]);
 
   const showQuestion = (key) => {
-    const temp = testList.filter((item, index) => item.number === key)
-    setQuestion(...temp)
-    console.log(question)
+    const temp = testList.filter((item, index) => item.number === key);
+    setQuestion(...temp);
     setIsModalVisible(true);
   };
   const showModalModify = (key) => {};
   const handleDelete = (key) => {
-    console.log(key);
+    setRemoveId(key);
+    remove(key).then((res) => {
+      console.log(res);
+    });
   };
 
   const handleOk = () => {
@@ -184,14 +193,16 @@ const ExamSearch = memo(() => {
       </Card>
 
       <Modal
-        title="Basic Modal"
+        title="试题信息"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <div>
-          {question.Tdesc}
-        </div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: question.Tdesc && question.Tdesc.replace(/\n/g, "<br/>"),
+          }}
+        ></div>
       </Modal>
     </FilterTittleWrapper>
   );

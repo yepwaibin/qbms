@@ -42,3 +42,10 @@ export function getList() {
     url: "/paper",
   });
 }
+
+export function remove(number) {
+  return request({
+    method: "delete",
+    url: `/paper/${number}`,
+  });
+}

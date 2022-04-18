@@ -65,10 +65,7 @@ const Judge = memo(() => {
       Tknowledge: [...value.Tknowledge].join(","),
       Tpoint: value.Tpoint,
       Tdifficulty: value.Tdifficulty,
-      Tdesc: `
-      ${value.Ttopic}
-      A.${value.A}
-      B.${value.B}`,
+      Tdesc: `${value.Ttopic}\r\n A.${value.A}\r\n B.${value.B}\r\n C.${value.C}\r\n D.${value.D}`,
       Tanswer: value.Tanswer,
     };
     console.log(data);
