@@ -49,3 +49,11 @@ export function remove(number) {
     url: `/paper/${number}`,
   });
 }
+
+export function search(value) {
+  return request({
+    method: "post",
+    url: `/paper/search`,
+    data: value,
+  });
+}

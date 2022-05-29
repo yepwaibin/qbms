@@ -109,7 +109,6 @@ const CourseQuery = () => {
   };
 
   const handleSearch = (value) => {
-    console.log(value);
     searchCourse(value).then(res => {
       setCourse([...res])
     })

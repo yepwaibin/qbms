@@ -1,12 +1,12 @@
 import React, { memo } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, NavLink } from "react-router-dom";
 import { LoginWrapper, PanelWrappear } from "./style";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { loginUser } from "../../services/users";
 
 const Login = memo(() => {
-  const history = useHistory()
+  const history = useHistory();
   const handleLogin = (value) => {
     const { Uname, Upassword } = value;
     const data = {
@@ -17,15 +17,15 @@ const Login = memo(() => {
       message.success("登录成功");
     };
     const error = () => {
-      message.error('登录失败');
+      message.error("登录失败");
     };
     loginUser(data).then((res) => {
       if (res.token) {
         success();
         sessionStorage.setItem("token", res.token);
-        history.push('/home')
+        history.push("/home");
       } else {
-        error()
+        error();
       }
     });
   };
@@ -70,8 +70,7 @@ const Login = memo(() => {
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>记住我</Checkbox>
               </Form.Item>
-
-              <a href="/todo">忘记密码</a>
+              <NavLink to="/register">注册账号</NavLink>
             </div>
           </Form.Item>
 
@@ -81,7 +80,7 @@ const Login = memo(() => {
               htmlType="submit"
               className="login-form-button"
             >
-            登录
+              登录
               {/* <NavLink to="/home">登录</NavLink> */}
             </Button>
           </Form.Item>

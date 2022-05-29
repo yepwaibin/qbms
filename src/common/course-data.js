@@ -14,3 +14,14 @@ export const courseData = [
     points: ['函数', '三角'],
   },
 ]
+
+export const paper = [
+  {
+    Tgrade: '高一',
+    Tcourse: '数学',
+    Tuser: '叶老师',
+    Tpoint: '100',
+    Tdifficulty: '3',
+    Ttime: '1',
+  }
+]

@@ -19,6 +19,7 @@ import {
   getChapter,
   getList,
   remove,
+  search
 } from "@/services/paper";
 
 const ExamSearch = memo(() => {
@@ -91,6 +92,7 @@ const ExamSearch = memo(() => {
   const [question, setQuestion] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [removeId, setRemoveId] = useState(0);
+  const [searchList, setSearchList] = useState([]);
 
   useEffect(() => {
     getGrade().then((res) => {
@@ -130,9 +132,18 @@ const ExamSearch = memo(() => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  const handleSearch = (value) => {
+    search(value).then(res => {
+      res.map((item, index) => {
+        item.tags = item.Tknowledge.split(",");
+      });
+      setSearchList([...res])
+    })
+  };
   return (
     <FilterTittleWrapper>
-      <Form className="filter">
+      <Form className="filter" onFinish={handleSearch}>
         <Form.Item name="Tgrade" label="年级" hasFeedback>
           <Select placeholder="请选择年级">
             {grade.map((item, index) => {
@@ -189,7 +200,7 @@ const ExamSearch = memo(() => {
       <Divider orientation="left">试题信息</Divider>
 
       <Card className="card">
-        <Table columns={columns} dataSource={testList} />
+        <Table dataSource={searchList.length === 0 ? testList : searchList} columns={columns}></Table>
       </Card>
 
       <Modal

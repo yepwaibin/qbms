@@ -9,7 +9,7 @@ export const HomeWrapper = styled.div`
     top: 64px;
     bottom: 0;
   } */
-  .sider {
+  /* .sider {
     height: 100vh;
-  }
+  } */
 `;

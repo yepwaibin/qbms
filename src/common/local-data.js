@@ -81,10 +81,6 @@ export const menuTitle = [
             title: "自动组卷",
             link: "/home/paper/automerge",
           },
-          {
-            title: "手动组卷",
-            link: "/home/paper/manualmerge",
-          },
         ],
       },
       {
